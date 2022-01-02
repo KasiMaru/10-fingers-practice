@@ -1,0 +1,11 @@
+{
+  "name": "10-fingers-practice",
+  "version": "1.0.0",
+  "description": "An app that allows you to practice 10 fingers typing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Timur Kasiev (timurkasievsochi@gmail.com)",
+  "license": "ISC"
+}
