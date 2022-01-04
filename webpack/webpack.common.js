@@ -4,7 +4,6 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ReactRefreshBabelPlugin = require('react-refresh/babel');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 
 const commonConfig = {
@@ -15,6 +14,7 @@ const commonConfig = {
     output: {
         path: path.resolve(__dirname, '..', './build'),
         filename: '[name].[contenthash].js',
+        clean: true,
     },
     module: {
         rules: [
@@ -48,7 +48,6 @@ const commonConfig = {
         new MiniCssExtractPlugin({
             filename: '[name].[contenthash].css',
         }),
-        new CleanWebpackPlugin(),
     ],
 };
 
