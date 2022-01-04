@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const commonConfig = require('./webpack.common');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 
 module.exports = (envVars) => {
@@ -20,6 +20,6 @@ module.exports = (envVars) => {
     return merge(
         baseConfig,
         commonConfig,
-        envConfig
+        envConfig,
     );
 }

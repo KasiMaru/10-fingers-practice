@@ -1,10 +1,10 @@
-// TODO: Add cashing, add hashes for filenames, add vendor bundles, add dead code elimination, add favicon to HtmlWebpackPlugin, add linting, add loaders for images/fonts
-
+// TODO: add favicon to HtmlWebpackPlugin, add loaders for images/fonts
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ReactRefreshBabelPlugin = require('react-refresh/babel');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 
 const commonConfig = {
@@ -48,7 +48,8 @@ const commonConfig = {
         new MiniCssExtractPlugin({
             filename: '[name].[contenthash].css',
         }),
-    ]
-}
+        new CleanWebpackPlugin(),
+    ],
+};
 
 module.exports = commonConfig;

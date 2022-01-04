@@ -1,4 +1,3 @@
-// TODO: Add cashing, add hashes for filenames, add vendor bundles, add dead code elimination, add favicon to HtmlWebpackPlugin, add linting, add loaders for images/fonts
 const path = require('path');
 const glob = require('glob');
 
@@ -9,20 +8,24 @@ const productionConfig = {
     mode: 'production',
     devtool: 'source-map',
     optimization: {
+        moduleIds: 'deterministic',
+        runtimeChunk: 'single',
         splitChunks: {
-            chunks: 'all',
-            minSize: 1000 * 600, // 600kb
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all',
+                },
+            },
         },
     },
 
     plugins: [
         new PurgeCssPlugin({
-            paths: glob.sync(
-                path.resolve(__dirname, '..', './src/**/*'),
-                { nodir: true },
-            ),
+            paths: glob.sync(path.resolve(__dirname, '..', './src/**/*'), { nodir: true }),
         }),
-    ]
-}
+    ],
+};
 
 module.exports = productionConfig;
