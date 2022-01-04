@@ -6,7 +6,9 @@
   "scripts": {
     "start": "webpack serve --config webpack/webpack.config.js --env env=dev",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
+    "lint-js": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
+    "lint-styles": "stylelint '**/*.scss' --fix",
+    "format": "prettier --write \"./src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "author": "Timur Kasiev (timurkasievsochi@gmail.com)",
   "license": "ISC",
