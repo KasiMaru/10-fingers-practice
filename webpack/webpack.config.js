@@ -1,10 +1,11 @@
 const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const commonConfig = require('./webpack.common');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 
-module.exports = (environment, args) => {
-    const { env } = environment;
+module.exports = (envVars) => {
+    const { env, analyze } = envVars;
 
     const envConfig = require(`./webpack.${env}.js`);
     const baseConfig = {
@@ -12,13 +13,13 @@ module.exports = (environment, args) => {
             new webpack.DefinePlugin({
                 'process.env.environment': JSON.stringify(env),
             }),
-        ]
+            analyze && new BundleAnalyzerPlugin(),
+        ].filter(Boolean),
     };
-    const fullConfig = merge(
+
+    return merge(
         baseConfig,
         commonConfig,
         envConfig
     );
-
-    return fullConfig;
 }
