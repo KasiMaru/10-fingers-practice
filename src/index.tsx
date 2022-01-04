@@ -1,7 +1,10 @@
 import ReactDOM from 'react-dom';
+import { StrictMode } from 'react';
 import { App } from './App';
 
 ReactDOM.render(
-    <App />,
-    document.querySelector('#root'),
+    <StrictMode>
+        <App />
+    </StrictMode>,
+    document.querySelector('#root')
 );
