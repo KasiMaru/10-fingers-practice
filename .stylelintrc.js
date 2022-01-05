@@ -7,5 +7,6 @@ module.exports = {
 
     rules: {
         'indentation': 4,
+        'string-quotes': 'single',
     }
 }
