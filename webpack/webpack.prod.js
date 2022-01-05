@@ -1,12 +1,13 @@
-const path = require('path');
-const glob = require('glob');
-
-const PurgeCssPlugin = require('purgecss-webpack-plugin');
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
 
 const productionConfig = {
     mode: 'production',
     devtool: 'source-map',
+    output: {
+        filename: '[name].[contenthash].js',
+        clean: true,
+    },
     optimization: {
         moduleIds: 'deterministic',
         runtimeChunk: 'single',
@@ -17,15 +18,28 @@ const productionConfig = {
                     name: 'vendors',
                     chunks: 'all',
                 },
+                styles: {
+                    name: 'styles',
+                    type: 'css/mini-extract',
+                    chunks: 'all',
+                    enforce: true,
+                },
             },
         },
+        minimizer: [
+            '...',
+            new CssMinimizerPlugin({
+                minimizerOptions: {
+                    preset: [
+                        'default',
+                        {
+                            discardComments: { removeAll: true },
+                        },
+                    ],
+                },
+            }),
+        ],
     },
-
-    plugins: [
-        new PurgeCssPlugin({
-            paths: glob.sync(path.resolve(__dirname, '..', './src/**/*'), { nodir: true }),
-        }),
-    ],
 };
 
 module.exports = productionConfig;
