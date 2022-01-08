@@ -1,4 +1,4 @@
-export const ModifierKeys = {
+export const ModifierKeysFromEvent = {
     ALT: { name: 'Alt', eventName: 'altKey' },
     CONTROL: { name: 'Control', eventName: 'ctrlKey' },
     META: { name: 'Meta', eventName: 'metaKey' },

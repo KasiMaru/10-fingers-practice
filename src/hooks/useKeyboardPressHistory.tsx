@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ModifierKeys } from '../constants/keyboard';
+import { ModifierKeysFromEvent as ModKeys } from '../constants/keyboard';
 
 
 /**
@@ -12,7 +12,7 @@ type KeyCombination = Array<string>;
 type KeysHistory = Array<KeyCombination>;
 
 const getModKeysFromKbdEvent = (event: KeyboardEvent) =>
-    Object.values(ModifierKeys)
+    Object.values(ModKeys)
         .filter((keyValue) => event[keyValue.eventName])
         .map((pressedKey) => pressedKey.name);
 
