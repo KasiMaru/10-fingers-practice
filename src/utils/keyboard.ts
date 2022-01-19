@@ -14,7 +14,7 @@ export const convertLayoutToKeyData = (layout: string[][]) =>
     layout.map((row, columnIdx) =>
         row.map((key, rowIdx) => {
             const isModKey = checkIfModKey(key);
-            const [defaultValue, altValue] = isModKey ? [key] : key.split('');
+            const [defaultValue, altValue = null] = isModKey ? [key] : key.split('');
             const isAnchorKey = columnIdx === 2 && anchorKeysIndexes.includes(rowIdx);
 
             const keyData: UIKbdKey = {
@@ -61,10 +61,13 @@ export const mapLayoutToEvents = (layout: UIKbdKey[]): KbdLayoutMapping => {
         return mapped;
     }, {});
 
-    const altMappings = layout.reduce((mapped: KbdLayoutMapping, key) => {
-        mapped[key.altValue] = key;
-        return mapped;
-    }, {});
+    const altMappings = layout.reduce(
+        (mapped: KbdLayoutMapping, key) => {
+            key.altValue && (mapped[key.altValue] = key);
+            return mapped;
+        },
+        {}
+    );
 
     return { ...defaultMappings, ...altMappings };
 };
