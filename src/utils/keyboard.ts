@@ -2,15 +2,6 @@ import { UIKbdKey, KbdLayoutMapping } from '../types/keyboard';
 
 const SPACE_KEY_VALUE = ' ';
 
-const KeyValueToDisplayValue: Record<string, string|undefined> = {
-    [SPACE_KEY_VALUE]: '',
-    Meta: '⌘',
-    Control: 'ctrl',
-    Shift: '⇧',
-    Tab: '↹',
-    Backspace: '⌫',
-    Enter: '↵',
-};
 const anchorKeysIndexes: number[] = [1, 2, 3, 4, 7, 8, 9, 10];
 
 /**
@@ -51,16 +42,6 @@ const getClosestNumberFromArray = (array: number[], number: number) =>
             return bDiff < aDiff ? current : closest;
         }
     });
-
-export const formatKeyValueForUI = (key: UIKbdKey, isShiftPressed: boolean): string => {
-    if (key.isModKey) {
-        return KeyValueToDisplayValue[key.defaultValue] || key.defaultValue.toLowerCase();
-    }
-
-    return isShiftPressed ?
-        key.altValue :
-        key.defaultValue;
-};
 
 export const getAnchorSuggestionIdx = (keyIdx: number) => {
     const defaultRowKeysAmount = 14;

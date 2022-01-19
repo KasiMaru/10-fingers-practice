@@ -6,10 +6,9 @@ type KeyProps = {
     isShiftPressed: boolean;
 };
 
-const SPACE_KEY_VALUE = ' ';
 
 const KeyValueToDisplayValue: Record<string, string | undefined> = {
-    [SPACE_KEY_VALUE]: '',
+    Space: '',
     Meta: '⌘',
     Control: 'ctrl',
     Shift: '⇧',
