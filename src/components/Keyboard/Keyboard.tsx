@@ -1,5 +1,5 @@
 // TODO: remove default layout prop, think about typing layouts
-
+import { useState, useEffect, useMemo } from 'react';
 import { Key } from '../Key';
 import { useKeyboardPressHistory, useEvent } from '../../hooks';
 // @ts-ignore
@@ -13,28 +13,47 @@ import { UIKbdKey } from '../../types';
 
 type KeyboardProps = {
     layout: string[][],
-    isShiftPressed: boolean,
 };
 
+const isKbdEventWithShift = (event: unknown) =>
+    event instanceof KeyboardEvent && event.shiftKey;
 
 export const Keyboard = (props: KeyboardProps) => {
-    const { layout = macEnLayout as typeof props.layout, isShiftPressed } = props;
-    const [keydownEvent] = useEvent('keydown');
-    const [, lastKeyCombination] = useKeyboardPressHistory(keydownEvent as KeyboardEvent);
+    const { layout = macEnLayout as typeof props.layout } = props;
+    const [isShiftPressed, setIsShiftPressed] = useState(false);
+    const [keyDownEvent] = useEvent('keydown');
+    const [keyUpEvent] = useEvent('keyup');
+    const [, lastKeyCombination] = useKeyboardPressHistory(keyDownEvent as KeyboardEvent);
+
     const convertedLayout = convertLayoutToKeyData(layout);
     const mappedLayout = mapLayoutToEvents(convertedLayout);
 
-    const renderKeyboardLayout = () => {
-        return convertedLayout.map(
-            (key, i) => (
+    useEffect(
+        () => {
+            const isShiftHeld = isKbdEventWithShift(keyDownEvent);
+            setIsShiftPressed(isShiftHeld);
+        },
+        [keyDownEvent]
+    );
+    useEffect(
+        () => {
+            const isShiftReleased = isKbdEventWithShift(keyUpEvent);
+            setIsShiftPressed(isShiftReleased);
+        },
+        [keyUpEvent]
+    );
+
+    const keyboardLayout = useMemo(
+        () => convertedLayout.map(
+            (key, i) =>
                 <Key
                     key={`${key.defaultValue}-${i}`}
                     keyData={key}
                     isShiftPressed={isShiftPressed}
                 />
-            )
-        );
-    };
+        ),
+        [convertedLayout, isShiftPressed]
+    );
 
     const matchEventToMappedLayout = (): UIKbdKey | null => {
         const lastKeyPressed = lastKeyCombination?.[0];
@@ -52,10 +71,8 @@ export const Keyboard = (props: KeyboardProps) => {
     );
 
     return (
-        <>
-            <div style={{ width: '80%', margin: '0 auto' }}>
-                <section className="keyboard">{renderKeyboardLayout()}</section>
-            </div>
-        </>
+        <div style={{ width: '80%', margin: '0 auto' }}>
+            <section className="keyboard">{keyboardLayout}</section>
+        </div>
     );
 };
