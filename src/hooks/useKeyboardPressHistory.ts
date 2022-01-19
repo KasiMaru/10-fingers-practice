@@ -17,7 +17,9 @@ const getModKeysFromKbdEvent = (event: KeyboardEvent) =>
         .map((pressedKey) => pressedKey.name);
 
 
-export const useKeyboardPressHistory = (event: KeyboardEvent | null) => {
+export const useKeyboardPressHistory = (
+    event: KeyboardEvent | null,
+): [KeysHistory, KeyCombination | null] => {
     const [history, setHistory] = useState<KeysHistory>([]);
 
     useEffect(
@@ -34,5 +36,6 @@ export const useKeyboardPressHistory = (event: KeyboardEvent | null) => {
         [event]
     );
 
-    return [history];
+    const lastKeyCombination = history[history.length - 1];
+    return [history, lastKeyCombination];
 };
