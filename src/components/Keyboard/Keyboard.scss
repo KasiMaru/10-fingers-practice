@@ -1,0 +1,10 @@
+@import '../../styles/variables';
+
+// 14,5 keys in a row, 5 rows in a standard mac keyboard
+.keyboard {
+    display: grid;
+    grid-template-rows: repeat(5, calc($key-size * 1.5));
+    grid-template-columns: repeat(58, 1fr);
+    gap: calc($key-size / 8);
+    width: 100%;
+}

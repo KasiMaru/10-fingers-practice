@@ -1,6 +1,6 @@
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
-
+// TODO: Do not allow to build prod with lint/ts errors
 const productionConfig = {
     mode: 'production',
     devtool: 'source-map',

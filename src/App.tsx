@@ -1,4 +1,4 @@
-import { Keyboard } from './components/Keyboard';
-import './style.scss';
+import { Keyboard } from './components';
+import './styles/index.scss';
 
 export const App = () => <Keyboard />;

@@ -1,18 +1,16 @@
 // TODO: remove default layout prop, think about typing layouts
 
 import { useState, useEffect } from 'react';
-import classNames from 'classnames';
-import { useKeyboardPressHistory } from '../hooks/useKeyboardPressHistory';
+import { Key } from '../Key';
+import { useKeyboardPressHistory } from '../../hooks';
 // @ts-ignore
-import macEnLayout from '../configs/keyboardLayouts/mac-en';
+import macEnLayout from '../../configs/keyboardLayouts/mac-en';
 import {
-    getAnchorSuggestionIdx,
     convertLayoutToKeyData,
-    formatKeyValueForUI,
     mapLayoutToEvents,
-} from '../utils/keyboard';
-import './Keyboard.scss';
-import { UIKbdKey } from '../types/keyboard';
+    getAnchorSuggestionIdx,
+} from '../../utils/keyboard';
+import { UIKbdKey } from '../../types';
 
 type KeyboardProps = {
     layout: string[][],
@@ -38,22 +36,13 @@ export const Keyboard = (props: KeyboardProps) => {
     );
 
     const renderKeyboardLayout = () => {
-        return convertedLayout.map((key, i) => {
-            const displayValue = formatKeyValueForUI(key, isShiftPressed);
-
-            const keyClasses = classNames(
-                'key',
-                `key--${key.defaultValue.toLowerCase()}`,
-                { 'key--default': !key.isModKey },
-                { 'key--modifier': key.isModKey },
-            );
-
-            return (
-                <div data-testid={displayValue} className={keyClasses} key={`${key}-${i}`}>
-                    <div className="key__content">{displayValue}</div>
-                </div>
-            );
-        });
+        return convertedLayout.map((key, i) => (
+            <Key
+                key={`${key.defaultValue}-${i}`}
+                keyData={key}
+                isShiftPressed={isShiftPressed}
+            />
+        ));
     };
 
     const matchEventToMappedLayout = (): UIKbdKey|null => {
@@ -67,7 +56,11 @@ export const Keyboard = (props: KeyboardProps) => {
         matchEventToMappedLayout()?.rowIdx
     );
 
-    console.log(convertedLayout.find((k) => k.rowIdx === suggestedAnchorIdx && k.columnIdx === 2));
+    console.log(
+        convertedLayout.find(
+            (k) => k.rowIdx === suggestedAnchorIdx && k.columnIdx === 2
+        )
+    );
 
     return (
         <>
