@@ -11,23 +11,21 @@ import {
     formatKeyValueForUI,
     mapLayoutToEvents,
 } from '../utils/keyboard';
-import './ProtoKeyboard.scss';
+import './Keyboard.scss';
 import { UIKbdKey } from '../types/keyboard';
 
-type ProtoKeyboardProps = {
+type KeyboardProps = {
     layout: string[][],
     isShiftPressed: boolean,
 };
 
 
-export const ProtoKeyboard = (props: ProtoKeyboardProps) => {
+export const Keyboard = (props: KeyboardProps) => {
     const {layout = macEnLayout as typeof props.layout, isShiftPressed} = props;
     const [event, setEvent] = useState<KeyboardEvent | null>(null);
     const [keyboardHistory] = useKeyboardPressHistory(event);
     const convertedLayout = convertLayoutToKeyData(layout);
     const mappedLayout = mapLayoutToEvents(convertedLayout);
-
-    console.log();
 
     useEffect(
         () => {

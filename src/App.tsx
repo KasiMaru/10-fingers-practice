@@ -1,4 +1,4 @@
-import { ProtoKeyboard } from './components/ProtoKeyboard';
+import { Keyboard } from './components/Keyboard';
 import './style.scss';
 
-export const App = () => <ProtoKeyboard />;
+export const App = () => <Keyboard />;
