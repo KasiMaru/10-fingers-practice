@@ -1,7 +1,6 @@
 @import '../../styles/variables';
 
 .key {
-    grid-column: span 4;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -11,24 +10,4 @@
     border-radius: 5px;
     font-size: clamp(1rem, 2.5vw, 2.25rem);
     line-height: 0;
-}
-
-.key--backspace,
-.key--tab,
-.key--capslock {
-    grid-column: span 6;
-}
-
-.key--enter {
-    grid-column: span 8;
-}
-
-.key--shift,
-.key--meta,
-.key--control {
-    grid-column: span 7;
-}
-
-.key--space {
-    grid-column: span 22;
 }

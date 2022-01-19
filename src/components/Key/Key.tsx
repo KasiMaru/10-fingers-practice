@@ -6,7 +6,6 @@ type KeyProps = {
     isShiftPressed: boolean;
 };
 
-
 const KeyValueToDisplayValue: Record<string, string | undefined> = {
     Space: '',
     Meta: '⌘',
@@ -20,21 +19,26 @@ const KeyValueToDisplayValue: Record<string, string | undefined> = {
 
 export const Key = (props: KeyProps) => {
     const { keyData, isShiftPressed } = props;
+    const shouldMapValueToSymbol = keyData.isModKey || !keyData.altValue;
 
     const formatKeyValueForUI = () => {
-        if (keyData.isModKey) {
+        if (shouldMapValueToSymbol) {
             return (
-                KeyValueToDisplayValue[keyData.defaultValue] ||
+                KeyValueToDisplayValue[keyData.defaultValue] ??
                 keyData.defaultValue.toLowerCase()
             );
         }
 
-        return isShiftPressed ? keyData.altValue : keyData.defaultValue;
+        return isShiftPressed && keyData.altValue ?
+            keyData.altValue :
+            keyData.defaultValue;
     };
 
     const keyClasses = classNames(
+        'keyboard__key',
+        {[`keyboard__key--${keyData.defaultValue.toLowerCase()}`]: shouldMapValueToSymbol},
+
         'key',
-        `key--${keyData.defaultValue.toLowerCase()}`,
         { 'key--default': !keyData.isModKey },
         { 'key--modifier': keyData.isModKey }
     );
