@@ -25,8 +25,8 @@ export const useKeyboardPressHistory = (
     useEffect(
         () => {
             if (!event || !event?.key) return;
-            const modKeys = getModKeysFromKbdEvent(event);
 
+            const modKeys = getModKeysFromKbdEvent(event);
             const isOnlyModifierPressed = modKeys.includes(event.key as typeof modKeys[number]);
             if (isOnlyModifierPressed) return;
 
