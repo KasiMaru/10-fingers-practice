@@ -1,15 +1,10 @@
 // TODO: remove default layout prop, think about typing layouts
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Key } from '../Key';
 import { useKeyboardPressHistory, useEvent } from '../../hooks';
 // @ts-ignore
 import macEnLayout from '../../configs/keyboardLayouts/mac-en';
-import {
-    convertLayoutToKeyData,
-    mapLayoutToEvents,
-    getAnchorSuggestionIdx,
-} from '../../utils/keyboard';
-import { UIKbdKey } from '../../types';
+import { convertLayoutToKeyData, mapLayoutToEvents } from '../../utils/keyboard';
 
 type KeyboardProps = {
     layout: string[][],
@@ -21,12 +16,21 @@ const isKbdEventWithShift = (event: unknown) =>
 export const Keyboard = (props: KeyboardProps) => {
     const { layout = macEnLayout as typeof props.layout } = props;
     const [isShiftPressed, setIsShiftPressed] = useState(false);
+
     const [keyDownEvent] = useEvent('keydown');
     const [keyUpEvent] = useEvent('keyup');
-    const [, lastKeyCombination] = useKeyboardPressHistory(keyDownEvent as KeyboardEvent);
 
-    const convertedLayout = convertLayoutToKeyData(layout);
-    const mappedLayout = mapLayoutToEvents(convertedLayout);
+    const [, lastKeyCombination] = useKeyboardPressHistory(keyDownEvent as KeyboardEvent);
+    const lastKeyPressed = lastKeyCombination?.[0];
+
+    const convertedLayout = useMemo(
+        ()  => convertLayoutToKeyData(layout),
+        [layout],
+    );
+    const mappedLayout = useMemo(
+        () => mapLayoutToEvents(convertedLayout),
+        [convertedLayout]
+    );
 
     useEffect(
         () => {
@@ -43,31 +47,36 @@ export const Keyboard = (props: KeyboardProps) => {
         [keyUpEvent]
     );
 
+    const matchEventToMappedLayout = useCallback(
+        () => lastKeyPressed ? mappedLayout[lastKeyPressed] : null,
+        [mappedLayout, lastKeyPressed]
+    );
+
     const keyboardLayout = useMemo(
-        () => convertedLayout.map(
-            (key, i) =>
-                <Key
-                    key={`${key.defaultValue}-${i}`}
-                    keyData={key}
-                    isShiftPressed={isShiftPressed}
-                />
-        ),
-        [convertedLayout, isShiftPressed]
-    );
+        () =>
+            convertedLayout.map((key, i) => {
+                const isKeyPressedCurrently =
+                    lastKeyPressed === key.defaultValue ||
+                    lastKeyPressed === key.altValue;
 
-    const matchEventToMappedLayout = (): UIKbdKey | null => {
-        const lastKeyPressed = lastKeyCombination?.[0];
-        return lastKeyPressed ? mappedLayout[lastKeyPressed] : null;
-    };
+                const isSuggestedKey = matchEventToMappedLayout()?.suggestedAnchorKey === key.defaultValue;
 
-    const suggestedAnchorIdx = getAnchorSuggestionIdx(
-        matchEventToMappedLayout()?.rowIdx
-    );
-
-    console.log(
-        convertedLayout.find(
-            (k) => k.rowIdx === suggestedAnchorIdx && k.columnIdx === 2
-        )
+                return (
+                    <Key
+                        key={`${key.defaultValue}-${i}`}
+                        keyData={key}
+                        isShiftPressed={isShiftPressed}
+                        isKeyPressed={isKeyPressedCurrently}
+                        isSuggestedKey={isSuggestedKey}
+                    />
+                );
+            }),
+        [
+            convertedLayout,
+            isShiftPressed,
+            lastKeyPressed,
+            matchEventToMappedLayout,
+        ]
     );
 
     return (

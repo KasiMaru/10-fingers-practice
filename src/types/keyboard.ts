@@ -3,6 +3,7 @@ export type UIKbdKey = {
     altValue: string | null;
     columnIdx: number;
     rowIdx: number;
+    suggestedAnchorKey: string;
     isModKey: boolean;
     isAnchorKey: boolean;
 };

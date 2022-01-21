@@ -11,17 +11,27 @@ export const checkIfModKey = (key: string) =>
     key.length >= 3 && key[0] === key[0].toUpperCase();
 
 export const convertLayoutToKeyData = (layout: string[][]) =>
-    layout.map((row, columnIdx) =>
-        row.map((key, rowIdx) => {
+    layout.map((row, rowIdx) =>
+        row.map((key, columnIdx) => {
             const isModKey = checkIfModKey(key);
             const [defaultValue, altValue = null] = isModKey ? [key] : key.split('');
-            const isAnchorKey = columnIdx === 2 && anchorKeysIndexes.includes(rowIdx);
+            const isAnchorKey = rowIdx === 2 && anchorKeysIndexes.includes(columnIdx);
+
+            console.log(row.length);
+
+            const suggestedAnchorIdx = getAnchorSuggestionIdx(
+                columnIdx,
+                row.length,
+            );
+
+            const suggestedAnchorKey = layout[2][suggestedAnchorIdx][0];
 
             const keyData: UIKbdKey = {
                 defaultValue: defaultValue === SPACE_KEY_VALUE ? 'Space' : defaultValue,
                 altValue,
-                columnIdx,
                 rowIdx,
+                suggestedAnchorKey,
+                columnIdx,
                 isAnchorKey,
                 isModKey,
             };
@@ -43,14 +53,12 @@ const getClosestNumberFromArray = (array: number[], number: number) =>
         }
     });
 
-export const getAnchorSuggestionIdx = (keyIdx: number) => {
-    const defaultRowKeysAmount = 14;
-
+export const getAnchorSuggestionIdx = (keyIdx: number, rowLength: number) => {
     const leftHandAnchors = anchorKeysIndexes.slice(0, anchorKeysIndexes.length / 2);
     const rightHandAnchors = anchorKeysIndexes.slice(anchorKeysIndexes.length / 2);
 
     return getClosestNumberFromArray(
-        (keyIdx < defaultRowKeysAmount / 2) ? leftHandAnchors : rightHandAnchors,
+        keyIdx < Math.ceil(rowLength / 2) ? leftHandAnchors : rightHandAnchors,
         keyIdx
     );
 };
@@ -58,12 +66,16 @@ export const getAnchorSuggestionIdx = (keyIdx: number) => {
 export const mapLayoutToEvents = (layout: UIKbdKey[]): KbdLayoutMapping => {
     const defaultMappings = layout.reduce((mapped: KbdLayoutMapping, key) => {
         mapped[key.defaultValue] = key;
+
         return mapped;
-    }, {});
+    },
+        {}
+    );
 
     const altMappings = layout.reduce(
         (mapped: KbdLayoutMapping, key) => {
             key.altValue && (mapped[key.altValue] = key);
+
             return mapped;
         },
         {}
