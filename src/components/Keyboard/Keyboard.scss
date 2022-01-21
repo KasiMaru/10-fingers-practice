@@ -1,6 +1,6 @@
 @import '../../styles/variables';
 
-// 14.5 — keys in a kbd row, 4 — each key divided into 4 "key columns"
+// ~14.5 — keys in a kbd row, 4 — each key divided into 4 "key columns"
 $keyboard-columns: 14.5 * 4;
 
 .keyboard {
@@ -15,8 +15,12 @@ $keyboard-columns: 14.5 * 4;
     grid-column: span 4;
 }
 
-.keyboard__key--backspace,
 .keyboard__key--tab,
+.keyboard__key--\\ {
+    grid-column: span 5;
+}
+
+.keyboard__key--backspace,
 .keyboard__key--capslock {
     grid-column: span 6;
 }
