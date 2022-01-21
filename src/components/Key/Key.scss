@@ -11,3 +11,16 @@
     font-size: clamp(1rem, 2.5vw, 2.25rem);
     line-height: 0;
 }
+
+.key--anchor {
+    background-color: #9fdae3;
+}
+
+.key--pressed {
+    background-color: #8ccba2;
+}
+
+.key--suggested {
+    color: white;
+    background-color: #60619b;
+}

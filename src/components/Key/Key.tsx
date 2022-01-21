@@ -3,7 +3,9 @@ import { UIKbdKey } from '../../types/keyboard'
 
 type KeyProps = {
     keyData: UIKbdKey;
+    isKeyPressed: boolean;
     isShiftPressed: boolean;
+    isSuggestedKey: boolean;
 };
 
 const KeyValueToDisplayValue: Record<string, string | undefined> = {
@@ -18,7 +20,7 @@ const KeyValueToDisplayValue: Record<string, string | undefined> = {
 
 
 export const Key = (props: KeyProps) => {
-    const { keyData, isShiftPressed } = props;
+    const { keyData, isKeyPressed, isShiftPressed, isSuggestedKey } = props;
     const shouldMapValueToSymbol = keyData.isModKey || !keyData.altValue;
 
     const formatKeyValueForUI = () => {
@@ -36,11 +38,14 @@ export const Key = (props: KeyProps) => {
 
     const keyClasses = classNames(
         'keyboard__key',
-        {[`keyboard__key--${keyData.defaultValue.toLowerCase()}`]: shouldMapValueToSymbol},
+        [`keyboard__key--${keyData.defaultValue.toLowerCase()}`],
 
         'key',
         { 'key--default': !keyData.isModKey },
-        { 'key--modifier': keyData.isModKey }
+        { 'key--modifier': keyData.isModKey },
+        { 'key--anchor': keyData.isAnchorKey },
+        { 'key--pressed': isKeyPressed },
+        { 'key--suggested': isSuggestedKey && !isKeyPressed }
     );
 
     return (
