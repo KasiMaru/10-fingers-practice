@@ -16,6 +16,7 @@ const KeyValueToDisplayValue: Record<string, string | undefined> = {
     Tab: '↹',
     Backspace: '⌫',
     Enter: '↵',
+    Capslock: '⇪',
 };
 
 
