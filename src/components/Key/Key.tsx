@@ -38,7 +38,7 @@ export const Key = (props: KeyProps) => {
 
     const keyClasses = classNames(
         'keyboard__key',
-        [`keyboard__key--${keyData.defaultValue.toLowerCase()}`],
+        [`keyboard__key--position-${keyData.columnIdx}-${keyData.rowIdx}`],
 
         'key',
         { 'key--default': !keyData.isModKey },

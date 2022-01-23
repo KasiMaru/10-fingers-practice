@@ -15,26 +15,32 @@ $keyboard-columns: 14.5 * 4;
     grid-column: span 4;
 }
 
-.keyboard__key--tab,
-.keyboard__key--\\ {
+.keyboard__key--position-0-1,
+.keyboard__key--position-13-1 {
     grid-column: span 5;
 }
 
-.keyboard__key--backspace,
-.keyboard__key--capslock {
+.keyboard__key--position-13-0,
+.keyboard__key--position-0-2 {
     grid-column: span 6;
 }
 
-.keyboard__key--shift,
-.keyboard__key--meta,
-.keyboard__key--control {
+.keyboard__key--position-0-3,
+.keyboard__key--position-12-3,
+.keyboard__key--position-0-4,
+.keyboard__key--position-6-4 {
     grid-column: span 7;
 }
 
-.keyboard__key--enter {
+.keyboard__key--position-12-2 {
     grid-column: span 8;
 }
 
-.keyboard__key--space {
-    grid-column: span 22;
+.keyboard__key--position-3-4 {
+    grid-column: span 24;
+}
+
+.keyboard__key--position-2-4,
+.keyboard__key--position-4-4 {
+    grid-column: span 6;
 }

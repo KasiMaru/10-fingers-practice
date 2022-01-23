@@ -17,8 +17,6 @@ export const convertLayoutToKeyData = (layout: string[][]) =>
             const [defaultValue, altValue = null] = isModKey ? [key] : key.split('');
             const isAnchorKey = rowIdx === 2 && anchorKeysIndexes.includes(columnIdx);
 
-            console.log(row.length);
-
             const suggestedAnchorIdx = getAnchorSuggestionIdx(
                 columnIdx,
                 row.length,
