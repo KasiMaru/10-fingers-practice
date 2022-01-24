@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import classNames from 'classnames';
 import { UIKbdKey } from '../../types/keyboard'
 
@@ -20,43 +21,53 @@ const KeyValueToDisplayValue: Record<string, string | undefined> = {
 };
 
 
-export const Key = (props: KeyProps) => {
-    const { keyData, isKeyPressed, isShiftPressed, isSuggestedKey } = props;
-    const shouldMapValueToSymbol = keyData.isModKey || !keyData.altValue;
+export const Key = forwardRef<HTMLDivElement, KeyProps>(
+    (
+        {
+            keyData,
+            isKeyPressed,
+            isShiftPressed,
+            isSuggestedKey,
+        },
+        ref,
+    ) => {
+        const shouldMapValueToSymbol = keyData.isModKey || !keyData.altValue;
 
-    const formatKeyValueForUI = () => {
-        if (shouldMapValueToSymbol) {
-            return (
-                KeyValueToDisplayValue[keyData.defaultValue] ??
-                keyData.defaultValue.toLowerCase()
-            );
-        }
+        const formatKeyValueForUI = () => {
+            if (shouldMapValueToSymbol) {
+                return (
+                    KeyValueToDisplayValue[keyData.defaultValue] ??
+                    keyData.defaultValue.toLowerCase()
+                );
+            }
 
-        return isShiftPressed && keyData.altValue ?
-            keyData.altValue :
-            keyData.defaultValue;
-    };
+            return isShiftPressed && keyData.altValue
+                ? keyData.altValue
+                : keyData.defaultValue;
+        };
 
-    const keyClasses = classNames(
-        'keyboard__key',
-        [`keyboard__key--position-${keyData.columnIdx}-${keyData.rowIdx}`],
+        const keyClasses = classNames(
+            'keyboard__key',
+            [`keyboard__key--position-${keyData.columnIdx}-${keyData.rowIdx}`],
 
-        'key',
-        { 'key--default': !keyData.isModKey },
-        { 'key--modifier': keyData.isModKey },
-        { 'key--anchor': keyData.isAnchorKey },
-        { 'key--pressed': isKeyPressed },
-        { 'key--suggested': isSuggestedKey && !isKeyPressed }
-    );
+            'key',
+            { 'key--default': !keyData.isModKey },
+            { 'key--modifier': keyData.isModKey },
+            { 'key--anchor': keyData.isAnchorKey },
+            { 'key--pressed': isKeyPressed },
+            { 'key--suggested': isSuggestedKey && !isKeyPressed }
+        );
 
-    return (
-        <div
-            data-testid={keyData.defaultValue}
-            className={keyClasses}
-        >
-            <div className="key__content">
-                {formatKeyValueForUI()}
+        return (
+            <div
+                ref={ref}
+                data-testid={keyData.defaultValue}
+                className={keyClasses}
+            >
+                <div className="key__content">{formatKeyValueForUI()}</div>
             </div>
-        </div>
-    );
-};
+        );
+    }
+);
+
+Key.displayName = 'Key';
