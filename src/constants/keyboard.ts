@@ -4,3 +4,8 @@ export const ModifierKeysFromEvent = {
     META: { name: 'Meta', eventName: 'metaKey' },
     SHIFT: { name: 'Shift', eventName: 'shiftKey' },
 } as const;
+
+export const Languages = {
+    EN: 'en',
+    RU: 'eu',
+} as const;
