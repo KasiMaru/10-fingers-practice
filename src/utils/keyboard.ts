@@ -23,6 +23,7 @@ export const convertLayoutToKeyData = (layout: string[][]) =>
 
             const suggestedAnchorIdx = getAnchorSuggestionIdx(
                 columnIdx,
+                rowIdx,
                 row.length,
             );
 
@@ -56,7 +57,22 @@ const getClosestNumberFromArray = (array: number[], number: number) =>
         }
     });
 
-export const getAnchorSuggestionIdx = (keyIdx: number, rowLength: number) => {
+export const getAnchorSuggestionIdx = (
+    keyIdx: number,
+    rowIndex: number,
+    rowLength: number
+) => {
+    /**
+     * Suggestions based on the row need a little balancing, based on the layout
+     */
+    const RowIdxToBalanceNum: Record<number, number> = {
+        0: 0,
+        1: -1,
+        2: -1,
+        3: -1,
+        4: 0,
+    };
+
     const leftHandAnchors = ANCHOR_KEYS_INDEXES.slice(
         0,
         ANCHOR_KEYS_INDEXES.length / 2
@@ -65,11 +81,13 @@ export const getAnchorSuggestionIdx = (keyIdx: number, rowLength: number) => {
         ANCHOR_KEYS_INDEXES.length / 2
     );
 
-    return getClosestNumberFromArray(
-        keyIdx < Math.ceil(rowLength / 2) ? leftHandAnchors : rightHandAnchors,
-        keyIdx
-    );
-};
+    const currentAnchors =
+        keyIdx < Math.round(rowLength / 2 + RowIdxToBalanceNum[rowIndex])
+            ? leftHandAnchors
+            : rightHandAnchors;
+
+    return getClosestNumberFromArray(currentAnchors, keyIdx);
+};;
 
 export const mapLayoutToEvents = (layout: UIKbdKey[]): KbdLayoutMapping => {
     const defaultMappings = layout.reduce((mapped: KbdLayoutMapping, key) => {
