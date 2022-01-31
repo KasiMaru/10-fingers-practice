@@ -1,14 +1,22 @@
 import { useState } from 'react';
-import { useCaptureKeydownEvents } from './hooks';
 import { Display, Keyboard } from './components';
 // @ts-ignore
 import macEnLayout from './configs/keyboardLayouts/mac-en';
+// @ts-ignore
+import macRuLayout from './configs/keyboardLayouts/mac-ru';
+import { useCaptureKeydownEvents } from './hooks';
+import { getLangOfChar } from './utils/keyboard';
 import './styles/index.scss';
+
 
 export const App = () => {
     const [lastKeyPressedChar, isShiftPressed] = useCaptureKeydownEvents();
-    const [nextChar, setNextChar] = useState('e');
+    const [nextChar, setNextChar] = useState(' ');
 
+    const layoutByLang =
+        (lastKeyPressedChar && getLangOfChar(lastKeyPressedChar) === 'ru')
+            ? macRuLayout
+            : macEnLayout;
     const isError = lastKeyPressedChar !== nextChar;
 
     return (
@@ -20,7 +28,7 @@ export const App = () => {
                 />
 
                 <Keyboard
-                    layout={macEnLayout}
+                    layout={layoutByLang}
                     nextChar={nextChar}
                     lastPressedKeyChar={lastKeyPressedChar}
                     isError={isError}

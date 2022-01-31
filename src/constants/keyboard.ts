@@ -7,5 +7,5 @@ export const ModifierKeysFromEvent = {
 
 export const Languages = {
     EN: 'en',
-    RU: 'eu',
+    RU: 'ru',
 } as const;

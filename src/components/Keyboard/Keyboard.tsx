@@ -1,7 +1,7 @@
 // TODO: remove default layout prop, think about typing layouts
 import { useMemo } from 'react';
 import { useReactiveRef } from '../../hooks';
-import { convertLayoutToKeyData, mapLayoutToEvents } from '../../utils/keyboard';
+import { convertLayoutToKeyData, mapLayoutToKeyboardValues } from '../../utils/keyboard';
 import { HintArrow } from '../HintArrow';
 import { Key } from '../Key';
 
@@ -29,7 +29,7 @@ export const Keyboard: React.FC<KeyboardProps> = ({
         [layout]
     );
     const mappedLayout = useMemo(
-        () => mapLayoutToEvents(convertedLayout),
+        () => mapLayoutToKeyboardValues(convertedLayout),
         [convertedLayout]
     );
 

@@ -1,8 +1,6 @@
 import { UIKbdKey, KbdLayoutMapping } from '../types/keyboard';
 import { Languages } from '../constants/keyboard';
 
-const SPACE_KEY_VALUE = ' ';
-
 const ANCHOR_KEYS_INDEXES: number[] = [1, 2, 3, 4, 7, 8, 9, 10];
 const ANCHOR_KEYS_ROW = 2;
 
@@ -31,7 +29,7 @@ export const convertLayoutToKeyData = (layout: string[][]) =>
                 layout[ANCHOR_KEYS_ROW][suggestedAnchorIdx][0];
 
             const keyData: UIKbdKey = {
-                defaultValue: defaultValue === SPACE_KEY_VALUE ? 'Space' : defaultValue,
+                defaultValue,
                 altValue,
                 rowIdx,
                 suggestedAnchorKey,
@@ -89,19 +87,18 @@ export const getAnchorSuggestionIdx = (
     return getClosestNumberFromArray(currentAnchors, keyIdx);
 };;
 
-export const mapLayoutToEvents = (layout: UIKbdKey[]): KbdLayoutMapping => {
-    const defaultMappings = layout.reduce((mapped: KbdLayoutMapping, key) => {
-        mapped[key.defaultValue] = key;
-
-        return mapped;
-    },
+export const mapLayoutToKeyboardValues = (layout: UIKbdKey[]): KbdLayoutMapping => {
+    const defaultMappings = layout.reduce(
+        (mapped: KbdLayoutMapping, key) => {
+            mapped[key.defaultValue] = key;
+            return mapped;
+        },
         {}
     );
 
     const altMappings = layout.reduce(
         (mapped: KbdLayoutMapping, key) => {
             key.altValue && (mapped[key.altValue] = key);
-
             return mapped;
         },
         {}
@@ -113,7 +110,7 @@ export const mapLayoutToEvents = (layout: UIKbdKey[]): KbdLayoutMapping => {
 export const getLangOfChar = (
     char: string,
 ): typeof Languages[keyof typeof Languages] => {
-    const cyrillicCharsReg = /[\w\u0430-\u044f]+/i; // аА-яЯ
+    const cyrillicCharsReg = /[\u0430-\u044f]+/i; // аА-яЯ
     const isCyrillic = cyrillicCharsReg.test(char);
 
     return isCyrillic ? Languages.RU : Languages.EN;
