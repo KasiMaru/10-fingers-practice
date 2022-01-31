@@ -110,11 +110,11 @@ export const mapLayoutToEvents = (layout: UIKbdKey[]): KbdLayoutMapping => {
     return { ...defaultMappings, ...altMappings };
 };
 
-export const getLayoutLangByString = (
-    string: string,
+export const getLangOfChar = (
+    char: string,
 ): typeof Languages[keyof typeof Languages] => {
     const cyrillicCharsReg = /[\w\u0430-\u044f]+/i; // аА-яЯ
-    const isCyrillic = cyrillicCharsReg.test(string);
+    const isCyrillic = cyrillicCharsReg.test(char);
 
     return isCyrillic ? Languages.RU : Languages.EN;
 };

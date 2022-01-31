@@ -1,45 +1,26 @@
 // TODO: remove default layout prop, think about typing layouts
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Key } from '../Key';
-import { HintArrow } from '../HintArrow';
-import { useKeyboardPressHistory, useEvent, useReactiveRef } from '../../hooks';
-// @ts-ignore
-import macEnLayout from '../../configs/keyboardLayouts/mac-en';
+import { useCallback, useMemo } from 'react';
+import { useReactiveRef } from '../../hooks';
 import { convertLayoutToKeyData, mapLayoutToEvents } from '../../utils/keyboard';
+import { HintArrow } from '../HintArrow';
+import { Key } from '../Key';
 
 type KeyboardProps = {
-    layout: string[][],
+    layout: string[][];
+    currentChar: string | undefined;
+    errorChar: string | null;
+    isShiftPressed: boolean;
 };
 
-const isKbdEventWithShift = (event: unknown) =>
-    event instanceof KeyboardEvent && event.shiftKey;
 
-export const Keyboard: React.FC<KeyboardProps> = ({ layout = macEnLayout }) => {
-    const [isShiftPressed, setIsShiftPressed] = useState(false);
-
+export const Keyboard: React.FC<KeyboardProps> = ({
+    layout,
+    currentChar,
+    errorChar,
+    isShiftPressed,
+}) => {
     const [currentKeyRef, currentKeyRefValue] = useReactiveRef<HTMLDivElement>();
     const [suggestedKeyRef, suggestedKeyRefValue] = useReactiveRef<HTMLDivElement>();
-
-    const [keyDownEvent] = useEvent('keydown');
-    const [keyUpEvent] = useEvent('keyup');
-
-    const [, lastKeyCombination] = useKeyboardPressHistory(
-        keyDownEvent as KeyboardEvent
-    );
-    const lastKeyPressed = lastKeyCombination?.[0];
-
-    useEffect(() => {
-        const isShiftHeld = isKbdEventWithShift(keyDownEvent);
-        setIsShiftPressed(isShiftHeld);
-    },
-        [keyDownEvent]
-    );
-    useEffect(() => {
-        const isShiftReleased = isKbdEventWithShift(keyUpEvent);
-        setIsShiftPressed(isShiftReleased);
-    },
-        [keyUpEvent]
-    );
 
     const convertedLayout = useMemo(
         () => convertLayoutToKeyData(layout),
@@ -51,20 +32,20 @@ export const Keyboard: React.FC<KeyboardProps> = ({ layout = macEnLayout }) => {
     );
 
     const matchEventToMappedLayout = useCallback(
-        () => (lastKeyPressed ? mappedLayout[lastKeyPressed] : null),
-        [mappedLayout, lastKeyPressed]
+        () => (currentChar ? mappedLayout[currentChar] : null),
+        [mappedLayout, currentChar]
     );
 
     const keyboardLayout = useMemo(
         () =>
             convertedLayout.map((key, i) => {
                 const isKeyPressedCurrently =
-                    lastKeyPressed === key.defaultValue ||
-                    lastKeyPressed === key.altValue;
+                    currentChar === key.defaultValue ||
+                    currentChar === key.altValue;
 
                 const isSuggestedKey =
-                    matchEventToMappedLayout()?.suggestedAnchorKey ===
-                    key.defaultValue;
+                    matchEventToMappedLayout()?.suggestedAnchorKey === key.defaultValue;
+
                 const ref = isKeyPressedCurrently
                     ? currentKeyRef
                     : isSuggestedKey
@@ -79,13 +60,15 @@ export const Keyboard: React.FC<KeyboardProps> = ({ layout = macEnLayout }) => {
                         isShiftPressed={isShiftPressed}
                         isKeyPressed={isKeyPressedCurrently}
                         isSuggestedKey={isSuggestedKey}
+                        errorChar={errorChar}
                     />
                 );
             }),
         [
             convertedLayout,
             isShiftPressed,
-            lastKeyPressed,
+            currentChar,
+            errorChar,
             matchEventToMappedLayout,
             currentKeyRef,
             suggestedKeyRef,
@@ -93,15 +76,13 @@ export const Keyboard: React.FC<KeyboardProps> = ({ layout = macEnLayout }) => {
     );
 
     return (
-        <div style={{ width: '80%', margin: '0 auto', position: 'relative' }}>
-            {
-                currentKeyRefValue && suggestedKeyRefValue && (
-                    <HintArrow
-                        fromElement={suggestedKeyRefValue}
-                        toElement={currentKeyRefValue}
-                    />
-                )
-            }
+        <div style={{ position: 'relative' }}>
+            {currentKeyRefValue && suggestedKeyRefValue && (
+                <HintArrow
+                    fromElement={suggestedKeyRefValue}
+                    toElement={currentKeyRefValue}
+                />
+            )}
 
             <section className="keyboard">{keyboardLayout}</section>
         </div>

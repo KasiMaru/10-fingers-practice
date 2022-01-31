@@ -1,9 +1,10 @@
-import { forwardRef } from 'react';
+import { forwardRef, useMemo } from 'react';
 import classNames from 'classnames';
 import { UIKbdKey } from '../../types/keyboard'
 
 type KeyProps = {
     keyData: UIKbdKey;
+    errorChar: string | null;
     isKeyPressed: boolean;
     isShiftPressed: boolean;
     isSuggestedKey: boolean;
@@ -28,12 +29,14 @@ export const Key = forwardRef<HTMLDivElement, KeyProps>(
             isKeyPressed,
             isShiftPressed,
             isSuggestedKey,
+            errorChar,
         },
         ref,
     ) => {
         const shouldMapValueToSymbol = keyData.isModKey || !keyData.altValue;
 
-        const formatKeyValueForUI = () => {
+        const keyValue = useMemo(
+            () => {
             if (shouldMapValueToSymbol) {
                 return (
                     KeyValueToDisplayValue[keyData.defaultValue] ??
@@ -44,7 +47,14 @@ export const Key = forwardRef<HTMLDivElement, KeyProps>(
             return isShiftPressed && keyData.altValue
                 ? keyData.altValue
                 : keyData.defaultValue;
-        };
+            },
+            [
+                isShiftPressed,
+                keyData.defaultValue,
+                keyData.altValue,
+                shouldMapValueToSymbol,
+            ]
+        )
 
         const keyClasses = classNames(
             'keyboard__key',
@@ -55,7 +65,8 @@ export const Key = forwardRef<HTMLDivElement, KeyProps>(
             { 'key--modifier': keyData.isModKey },
             { 'key--anchor': keyData.isAnchorKey },
             { 'key--pressed': isKeyPressed },
-            { 'key--suggested': isSuggestedKey && !isKeyPressed }
+            { 'key--suggested': isSuggestedKey && !isKeyPressed },
+            { 'key--error': errorChar && errorChar === keyValue },
         );
 
         return (
@@ -64,7 +75,7 @@ export const Key = forwardRef<HTMLDivElement, KeyProps>(
                 data-testid={keyData.defaultValue}
                 className={keyClasses}
             >
-                <div className="key__content">{formatKeyValueForUI()}</div>
+                <div className="key__content">{keyValue}</div>
             </div>
         );
     }
