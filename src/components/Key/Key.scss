@@ -2,14 +2,14 @@
 @import '../../styles/mixins';
 
 .key {
-    @include bordered-panel;
-
     display: flex;
     align-items: center;
     justify-content: center;
     min-width: $key-size;
     font-size: clamp(1rem, 2.5vw, 2.5rem);
     line-height: 0;
+
+    @include bordered-panel;
 }
 
 .key--anchor {
@@ -17,10 +17,18 @@
 }
 
 .key--pressed {
+    transform: scale(0.95);
+}
+
+.key--next {
     background-color: #8ccba2;
 }
 
 .key--suggested {
     color: white;
     background-color: #60619b;
+}
+
+.key--error {
+    background-color: #cd9999;
 }

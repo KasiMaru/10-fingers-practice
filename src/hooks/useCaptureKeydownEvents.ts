@@ -15,7 +15,7 @@ export const useCaptureKeydownEvents = (): [string | undefined, boolean] => {
     const [, lastKeyCombination] = useKeyboardPressHistory(
         keyDownEvent as KeyboardEvent
     );
-    const lastKeyPressed = lastKeyCombination?.[0];
+    const lastKeyPressedChar = lastKeyCombination?.[0];
 
     useEffect(
         () => {
@@ -32,5 +32,5 @@ export const useCaptureKeydownEvents = (): [string | undefined, boolean] => {
         [keyUpEvent]
     );
 
-    return [lastKeyPressed, isShiftPressed];
+    return [lastKeyPressedChar, isShiftPressed];
 };

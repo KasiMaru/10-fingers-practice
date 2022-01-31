@@ -4,10 +4,11 @@ import { UIKbdKey } from '../../types/keyboard'
 
 type KeyProps = {
     keyData: UIKbdKey;
-    errorChar: string | null;
+    nextKeyChar: string;
     isKeyPressed: boolean;
     isShiftPressed: boolean;
     isSuggestedKey: boolean;
+    isError: boolean;
 };
 
 const KeyValueToDisplayValue: Record<string, string | undefined> = {
@@ -26,10 +27,11 @@ export const Key = forwardRef<HTMLDivElement, KeyProps>(
     (
         {
             keyData,
+            nextKeyChar,
             isKeyPressed,
             isShiftPressed,
             isSuggestedKey,
-            errorChar,
+            isError,
         },
         ref,
     ) => {
@@ -63,10 +65,11 @@ export const Key = forwardRef<HTMLDivElement, KeyProps>(
             'key',
             { 'key--default': !keyData.isModKey },
             { 'key--modifier': keyData.isModKey },
+            { 'key--next': keyValue === nextKeyChar },
             { 'key--anchor': keyData.isAnchorKey },
             { 'key--pressed': isKeyPressed },
             { 'key--suggested': isSuggestedKey && !isKeyPressed },
-            { 'key--error': errorChar && errorChar === keyValue },
+            { 'key--error': isKeyPressed && isError },
         );
 
         return (

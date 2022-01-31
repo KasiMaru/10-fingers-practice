@@ -1,5 +1,5 @@
 // TODO: remove default layout prop, think about typing layouts
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useReactiveRef } from '../../hooks';
 import { convertLayoutToKeyData, mapLayoutToEvents } from '../../utils/keyboard';
 import { HintArrow } from '../HintArrow';
@@ -7,19 +7,21 @@ import { Key } from '../Key';
 
 type KeyboardProps = {
     layout: string[][];
-    currentChar: string | undefined;
-    errorChar: string | null;
+    nextChar: string;
+    lastPressedKeyChar: string | undefined;
+    isError: boolean;
     isShiftPressed: boolean;
 };
 
 
 export const Keyboard: React.FC<KeyboardProps> = ({
     layout,
-    currentChar,
-    errorChar,
+    nextChar,
+    lastPressedKeyChar,
+    isError,
     isShiftPressed,
 }) => {
-    const [currentKeyRef, currentKeyRefValue] = useReactiveRef<HTMLDivElement>();
+    const [nextKeyRef, nextKeyRefValue] = useReactiveRef<HTMLDivElement>();
     const [suggestedKeyRef, suggestedKeyRefValue] = useReactiveRef<HTMLDivElement>();
 
     const convertedLayout = useMemo(
@@ -31,26 +33,23 @@ export const Keyboard: React.FC<KeyboardProps> = ({
         [convertedLayout]
     );
 
-    const matchEventToMappedLayout = useCallback(
-        () => (currentChar ? mappedLayout[currentChar] : null),
-        [mappedLayout, currentChar]
-    );
-
     const keyboardLayout = useMemo(
         () =>
             convertedLayout.map((key, i) => {
                 const isKeyPressedCurrently =
-                    currentChar === key.defaultValue ||
-                    currentChar === key.altValue;
+                    lastPressedKeyChar === key.defaultValue ||
+                    lastPressedKeyChar === key.altValue;
+
+                const isNextKey = nextChar === key.defaultValue || nextChar === key.altValue;
 
                 const isSuggestedKey =
-                    matchEventToMappedLayout()?.suggestedAnchorKey === key.defaultValue;
+                    mappedLayout[nextChar]?.suggestedAnchorKey === key.defaultValue;
 
-                const ref = isKeyPressedCurrently
-                    ? currentKeyRef
+                const ref = isNextKey
+                    ? nextKeyRef
                     : isSuggestedKey
-                        ? suggestedKeyRef
-                        : null;
+                    ? suggestedKeyRef
+                    : null;
 
                 return (
                     <Key
@@ -59,28 +58,30 @@ export const Keyboard: React.FC<KeyboardProps> = ({
                         keyData={key}
                         isShiftPressed={isShiftPressed}
                         isKeyPressed={isKeyPressedCurrently}
+                        nextKeyChar={nextChar}
                         isSuggestedKey={isSuggestedKey}
-                        errorChar={errorChar}
+                        isError={isError}
                     />
                 );
             }),
         [
+            mappedLayout,
             convertedLayout,
             isShiftPressed,
-            currentChar,
-            errorChar,
-            matchEventToMappedLayout,
-            currentKeyRef,
+            lastPressedKeyChar,
+            isError,
+            nextChar,
+            nextKeyRef,
             suggestedKeyRef,
         ]
     );
 
     return (
         <div style={{ position: 'relative' }}>
-            {currentKeyRefValue && suggestedKeyRefValue && (
+            {nextKeyRefValue && suggestedKeyRefValue && (
                 <HintArrow
                     fromElement={suggestedKeyRefValue}
-                    toElement={currentKeyRefValue}
+                    toElement={nextKeyRefValue}
                 />
             )}
 

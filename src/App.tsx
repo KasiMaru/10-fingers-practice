@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useCaptureKeydownEvents } from './hooks';
 import { Display, Keyboard } from './components';
 // @ts-ignore
@@ -5,7 +6,10 @@ import macEnLayout from './configs/keyboardLayouts/mac-en';
 import './styles/index.scss';
 
 export const App = () => {
-    const [lastKeyPressed, isShiftPressed] = useCaptureKeydownEvents();
+    const [lastKeyPressedChar, isShiftPressed] = useCaptureKeydownEvents();
+    const [nextChar, setNextChar] = useState('e');
+
+    const isError = lastKeyPressedChar !== nextChar;
 
     return (
         <div style={{ width: '80%', margin: '0 auto', marginTop: 40 }}>
@@ -17,8 +21,9 @@ export const App = () => {
 
                 <Keyboard
                     layout={macEnLayout}
-                    currentChar={lastKeyPressed}
-                    errorChar={null}
+                    nextChar={nextChar}
+                    lastPressedKeyChar={lastKeyPressedChar}
+                    isError={isError}
                     isShiftPressed={isShiftPressed}
                 />
             </div>
