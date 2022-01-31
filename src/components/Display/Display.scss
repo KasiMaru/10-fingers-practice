@@ -1,0 +1,27 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.display {
+    @include bordered-panel;
+
+    overflow-x: hidden;
+}
+
+.display__text {
+    position: relative;
+    padding: 8px;
+    font-size: 2.5rem;
+    white-space: nowrap;
+}
+
+.display__message {
+
+}
+
+.display__caret {
+
+}
+
+.display__letter {
+
+}

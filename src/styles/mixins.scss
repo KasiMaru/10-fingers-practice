@@ -1,0 +1,7 @@
+@import './variables';
+
+@mixin bordered-panel {
+    padding: 5px;
+    border: 2px solid darkgrey;
+    border-radius: $default-border-radius;
+}

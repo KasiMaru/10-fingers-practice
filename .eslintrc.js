@@ -48,6 +48,7 @@ module.exports = {
         'react/jsx-uses-react': 'off',
         'react/react-in-jsx-scope': 'off',
         '@typescript-eslint/explicit-module-boundary-types': 'off',
-        "jest-async/expect-return": 'error',
+        'jest-async/expect-return': 'error',
+        '@typescript-eslint/ban-ts-comment': 'off',
     },
 }
